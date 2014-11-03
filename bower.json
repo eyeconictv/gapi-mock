@@ -1,0 +1,24 @@
+{
+  "name": "rv-gapi-mock",
+  "version": "0.0.0",
+  "description": "gapi mock for rise vision projects",
+  "keywords": [
+    "gapi",
+    "rise",
+    "vision",
+    "mock"
+  ],
+  "authors": [
+    "Xiyang Chen <settinghead@gmail.com>"
+  ],
+  "license": "GNU GPL",
+  "homepage": "https://github.com/Rise-Vision/gapi-mock",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
