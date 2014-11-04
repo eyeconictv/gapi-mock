@@ -1,4 +1,4 @@
-(function (_, $, window, gapiMockData, Mustache, document) {
+(function (_, $, window, gapiMockData, Mustache, document, O, localStorage) {
   "use strict";
 
   /*global _,gapi,Mustache: false */
@@ -99,11 +99,16 @@
 
     };
 
-    var fakeDb;
+    var fakeDb = window.gapi._fakeDb = {serverDelay: 0};
 
+    var _clearObj = function (obj) {
+      for (var member in obj) {
+        delete obj[member];
+      }
+    };
     window.gapi.resetDb = function () {
       if(!window.gapi._fakeDb) {
-        fakeDb = window.gapi._fakeDb = {serverDelay: 0};
+        _clearObj(fakeDb);
       }
       fakeDb.companies = _.cloneDeep(gapiMockData.companies);
       fakeDb.accounts = _.cloneDeep(gapiMockData.accounts);
@@ -177,11 +182,29 @@
     var systemMessages = gapiMockData.systemMessages;
 
    if(localStorage.getItem("fakeGoogleDb")) {
-     fakeDb = window.gapi._fakeDb = JSON.parse(localStorage.getItem("fakeGoogleDb"));
+     _clearObj(fakeDb);
+     _.extend(fakeDb, JSON.parse(localStorage.getItem("fakeGoogleDb")));
    }
    else {
      window.gapi.resetDb();
    }
+
+   var oDb = O(fakeDb);
+   var _saving = false;
+   oDb.on("change", function () {
+     //prevent multiple saving events
+     // save only at the end of the execution cycle and if a save event is not already
+     //scheduled
+     if(!_saving) {
+       _saving = true;
+       setTimeout(function () {
+         localStorage.setItem("fakeGoogleDb", JSON.stringify(fakeDb || {}));
+         console.log("fakeGoogleDb persisted to localStorage.");
+         _saving = false;
+       });
+     }
+
+   });
 
     gapi.client = {
       load: function(path, version, cb) {
@@ -791,171 +814,6 @@
           };
         }
       }
-    },
-    setApiKey: function() {
-    },
-    tasks: {
-      tasks: {
-        update: function() {
-          return {
-            execute: function(cb) {
-              delayed(cb, {});
-            }
-          };
-        },
-        delete: function() {
-          return {
-            execute: function(cb) {
-              delayed(cb);
-            }
-          };
-        },
-        insert: function() {
-          return {
-            execute: function() {
-            }
-          };
-        },
-        list: function() {
-          return {
-            execute: function(cb) {
-              return delayed(cb, {
-                "kind": "tasks#tasks",
-                "items": [
-                {
-                  "kind": "tasks#task",
-                  "id": "MDE5MzU2Njg4NDcyNjMxOTE4MzE6Njk1MzUzOTY2OjQ3NTg4MjQyMg",
-                  "title": "x1",
-                  "updated": "2012-08-10T22:07:22.000Z",
-                  "position": "00000000000000410311",
-                  "status": "needsAction"
-                },
-                {
-                  "kind": "tasks#task",
-                  "id": "MDE5MzU2Njg4NDcyNjMxOTE4MzE6Njk1MzUzOTY2OjE0ODU0NTE1NDc",
-                  "title": "x2",
-                  "updated": "2012-08-10T22:07:25.000Z",
-                  "position": "00000000000000615467",
-                  "status": "needsAction"
-                },
-                {
-                  "kind": "tasks#task",
-                  "id": "MDE5MzU2Njg4NDcyNjMxOTE4MzE6Njk1MzUzOTY2OjgxNTQ5MTA3Nw",
-                  "title": "x3",
-                  "updated": "2012-08-12T14:30:49.000Z",
-                  "position": "00000000000000820623",
-                  "status": "completed",
-                  "completed": "2012-08-12T14:30:49.000Z"
-                }
-                ],
-                "result": {
-                  "kind": "tasks#tasks",
-                  "items": [
-                  {
-                    "kind": "tasks#task",
-                    "id": "MDE5MzU2Njg4NDcyNjMxOTE4MzE6Njk1MzUzOTY2OjQ3NTg4MjQyMg",
-                    "title": "x1",
-                    "updated": "2012-08-10T22:07:22.000Z",
-                    "position": "00000000000000410311",
-                    "status": "needsAction"
-                  },
-                  {
-                    "kind": "tasks#task",
-                    "id": "MDE5MzU2Njg4NDcyNjMxOTE4MzE6Njk1MzUzOTY2OjE0ODU0NTE1NDc",
-                    "title": "x2",
-                    "updated": "2012-08-10T22:07:25.000Z",
-                    "position": "00000000000000615467",
-                    "status": "needsAction"
-                  },
-                  {
-                    "kind": "tasks#task",
-                    "id": "MDE5MzU2Njg4NDcyNjMxOTE4MzE6Njk1MzUzOTY2OjgxNTQ5MTA3Nw",
-                    "title": "x3",
-                    "updated": "2012-08-12T14:30:49.000Z",
-                    "position": "00000000000000820623",
-                    "status": "completed",
-                    "completed": "2012-08-12T14:30:49.000Z"
-                  }
-                  ]
-                }
-              });
-            }
-          };
-        }
-      },
-      tasklists: {
-        update: function() {
-          return {
-            execute: function(cb) {
-              delayed(cb, {});
-            }
-          };
-        },
-        delete: function() {
-          return {
-            execute: function(cb) {
-              delayed(cb, {});
-            }
-          };
-        },
-        insert: function() {
-          return {
-            execute: function(cb) {
-              // Used for the 'Creating a list' test
-              delayed(cb, {
-                "id": "1",
-                "kind": "tasks#taskList",
-                "title": "Example list",
-                "updated": "2013-01-14T13:58:48.000Z"
-              });
-            }
-          };
-        },
-        list: function(options) {
-
-          options = options || {};
-
-
-          return {
-            execute: function(cb) {
-              delayed(cb, {
-                "kind": "tasks#taskLists",
-                "items": [
-                {
-                  "kind": "tasks#taskList",
-                  "id": "MDE5MzU2Njg4NDcyNjMxOTE4MzE6MDow",
-                  "title": "Default List",
-                  "updated": "2012-08-14T13:58:48.000Z",
-                },
-                {
-                  "kind": "tasks#taskList",
-                  "id": "MDE5MzU2Njg4NDcyNjMxOTE4MzE6NDg3ODA5MzA2OjA",
-                  "title": "Writing",
-                  "updated": "2012-07-22T17:58:19.000Z",
-                }
-                ],
-                "result": {
-                  "kind": "tasks#taskLists",
-                  "items": [
-                  {
-                    "kind": "tasks#taskList",
-                    "id": "MDE5MzU2Njg4NDcyNjMxOTE4MzE6MDow",
-                    "title": "Default List",
-                    "updated": "2012-08-14T13:58:48.000Z",
-                  },
-                  {
-                    "kind": "tasks#taskList",
-                    "id": "MDE5MzU2Njg4NDcyNjMxOTE4MzE6NDg3ODA5MzA2OjA",
-                    "title": "Writing",
-                    "updated": "2012-07-22T17:58:19.000Z",
-                  }
-                  ]
-                }
-              });
-            }
-          };
-        }
-      }
     }
   };
 
@@ -993,6 +851,7 @@
         }
 
         fakeDb.tokenMap[accessToken] = username;
+        fakeDb.tokenMap = _.clone(fakeDb.tokenMap); // need this to get watch to work
         return {
           "state": "",
           "access_token": accessToken,
@@ -1087,8 +946,10 @@
     }
   };
 
-  window.handleClientJSLoad();
+  if(window.handleClientJSLoad) {
+    window.handleClientJSLoad();
+  }
   }
 
 
-})(_, $, window, window.gapiMockData, Mustache, document);
+})(_, $, window, window.gapiMockData, Mustache, document, require("observed"), localStorage);

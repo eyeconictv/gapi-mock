@@ -1,0 +1,56 @@
+<html>
+<head>
+  <link href="components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css" />
+  <script charset="utf-8" type="text/javascript" src="components/lodash/dist/lodash.js"></script>
+  <script charset="utf-8" type="text/javascript" src="components/jquery/dist/jquery.js"></script>
+  <script charset="utf-8" type="text/javascript" src="components/mustache/mustache.js"></script>
+  <script charset="utf-8" type="text/javascript" src="components/bootstrap/dist/js/bootstrap.js"></script>
+  <script type="text/javascript" src="components/watch/src/watch.js"></script>
+  <script type="text/javascript" src="observed-browser.js"></script>
+  <script type="text/javascript" src="_mock-data.js"></script>
+  <script type="text/javascript" src="gapi-mock-data/users.js"></script>
+  <script type="text/javascript" src="gapi-mock-data/companies.js"></script>
+  <script type="text/javascript" src="gapi-mock-data/accounts.js"></script>
+  <script type="text/javascript" src="gapi-mock-data/systemmessages.js"></script>
+
+  <script charset="utf-8" type="text/javascript" src="gapi-mock.js"></script>
+
+
+</head>
+<body>
+  Welcome to Elgoog
+  <pre>
+ _______  ___      _______  _______  _______  _______
+|       ||   |    |       ||       ||       ||       |
+|    ___||   |    |    ___||   _   ||   _   ||    ___|
+|   |___ |   |    |   | __ |  | |  ||  | |  ||   | __
+|    ___||   |___ |   ||  ||  |_|  ||  |_|  ||   ||  |
+|   |___ |       ||   |_| ||       ||       ||   |_| |
+|_______||_______||_______||_______||_______||_______|
+  </pre>
+
+Select a user to continue
+
+<script charset="utf-8" type="text/javascript">
+
+  function getQueryStringValue (key) {
+    return unescape(window.location.search.replace(
+      new RegExp("^(?:.*[&\\?]" + escape(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+  }
+
+  //http://stackoverflow.com/a/22272828
+  window.gapi.auth.authorize({immediate: false}, function (o) {
+    var redirectUri = getQueryStringValue("redirect_uri");
+    setTimeout(function () {
+      window.location = redirectUri + "#access_token=" + o.access_token +
+        "&state=" + getQueryStringValue("state");
+    });
+
+  });
+  window.loginAs = function (username) {
+
+  };
+</script>
+
+</body>
+</html>
