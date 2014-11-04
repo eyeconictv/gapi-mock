@@ -14,30 +14,6 @@
       }
   }
 
-  function setCookie(cname, cvalue, exdays) {
-    if(!exdays) {
-      exdays = 999;
-    }
-    var d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    var expires = "expires="+d.toUTCString();
-    document.cookie = cname + "=" + cvalue + "; " + expires;
-  }
-
-  function getCookie(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(";");
-    for(var i=0; i<ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) === " ") { c = c.substring(1); }
-        if (c.indexOf(name) !== -1) {
-          return c.substring(name.length,c.length);
-        }
-    }
-    return "";
-  }
-
-
   if(real) {
 
     //mark as real GAPI (actual GAPI is loaded by common header)
@@ -930,11 +906,11 @@
     },
     setToken: function (token) {
       if(token) {
-        setCookie("gapi-mock-auth-token", JSON.stringify(token));
+        localStorage.setItem("gapi-mock-auth-token", JSON.stringify(token));
       }
     },
     getToken: function () {
-      var tokenStr = getCookie("gapi-mock-auth-token");
+      var tokenStr = localStorage.getItem("gapi-mock-auth-token");
       if(tokenStr) {
         return JSON.parse(tokenStr);
       }

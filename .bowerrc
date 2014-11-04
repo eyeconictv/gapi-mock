@@ -1,6 +1,3 @@
 {
-  "directory": "./components",
-  "scripts": {
-    "postinstall": "bower install"
-  }
+  "directory": "./components"
 }
