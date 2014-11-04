@@ -27,5 +27,8 @@
     "mustache": "~0.8.2",
     "bootstrap": "3.2.0",
     "watch": "*"
+  },
+  "scripts": {
+    "postinstall": "bower install"
   }
 }
