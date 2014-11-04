@@ -154,7 +154,7 @@
     };
 
     window.gapi.setPendingSignInUser = function (username) {
-      window.gapi._pendingUser = username;
+      localStorage.setItem("risevision.gapi-mock.pendingUser", username);
     };
 
     var resp = function (item) {
@@ -877,7 +877,6 @@
         var modalStr = Mustache.render(googleAuthDialogTemplate, {accounts: fakeDb.oauthAccounts});
 
         var tokenResult;
-
           var signInAs = function (username, next) {
             tokenResult = generateToken(username);
             next(function () {
@@ -890,12 +889,11 @@
               }
             });
           };
-
-          if(window.gapi._pendingUser) {
-            signInAs(window.gapi._pendingUser, function(cb1) {
+          if(localStorage.getItem("risevision.gapi-mock.pendingUser")) {
+            signInAs(localStorage.getItem("risevision.gapi-mock.pendingUser"), function(cb1) {
               cb1();
             });
-            delete window.gapi._pendingUser;
+            localStorage.removeItem("risevision.gapi-mock.pendingUser");
           }
           else {
             var modal = $(modalStr).modal({
