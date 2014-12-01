@@ -480,7 +480,7 @@
             }
           };
         },
-        update: function (obj) {
+        patch: function (obj) {
           return {
             execute: function (cb) {
               var company;
@@ -621,7 +621,7 @@
             }
           };
         },
-        update: function (obj) {
+        patch: function (obj) {
           return {
             execute: function (cb) {
               if (!obj) {obj = {}; }
@@ -634,7 +634,7 @@
                 user = getCurrentUser();
               }
               if (user) {
-                _.extend(user, JSON.parse(obj.data));
+                _.extend(user, obj.data);
                 delayed(cb, resp(user));
               }
               else {
@@ -708,7 +708,7 @@
                   var user = _.extend({
                     username: obj.username,
                     companyId: obj.companyId
-                  }, JSON.parse(obj.data));
+                  }, obj.data);
                   fakeDb.users.push(user);
                   delayed(cb, resp(user));
                 }
