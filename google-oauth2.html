@@ -43,7 +43,7 @@ Select a user to continue
     var redirectUri = getQueryStringValue("redirect_uri");
     setTimeout(function () {
       window.location = redirectUri + "#access_token=" + o.access_token +
-        "&state=" + getQueryStringValue("state");
+      "&state=" + encodeURIComponent(getQueryStringValue("state"));
     });
 
   });
