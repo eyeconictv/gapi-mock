@@ -53,8 +53,8 @@
     })();
 
     var getCurrentUsername = function () {
-      if(gapi.auth.getToken()) {
-        return fakeDb.tokenMap[gapi.auth.getToken().access_token];
+      if(gapi.auth.getTokenLocal()) {
+        return fakeDb.tokenMap[gapi.auth.getTokenLocal().access_token];
       }
       else {
         return null;
@@ -274,7 +274,7 @@
               execute: function (cb) {
                 var company;
                 obj = obj || {};
-                if(gapi.auth.getToken()) {
+                if(gapi.auth.getTokenLocal()) {
                   if(obj.id) {
                     company = _.findWhere(fakeDb.companies, obj);
                   }
@@ -435,7 +435,7 @@
               execute: function (cb) {
                 var company;
                 obj = obj || {};
-                if(gapi.auth.getToken()) {
+                if(gapi.auth.getTokenLocal()) {
                   if(obj.id) {
                     company = _.findWhere(fakeDb.companies, obj);
                   }
@@ -475,7 +475,7 @@
              execute: function (cb) {
                var company;
                obj = obj || {};
-               if(gapi.auth.getToken()) {
+               if(gapi.auth.getTokenLocal()) {
                  if(obj.authKey) {
                    company = _.findWhere(fakeDb.companies, obj);
                  }
@@ -515,7 +515,7 @@
             execute: function (cb) {
               var company;
               obj = obj || {};
-              if(gapi.auth.getToken()) {
+              if(gapi.auth.getTokenLocal()) {
                 if(obj.authKey) {
                   if(obj.id || obj.authKey) {
                     company = _.findWhere(window.gapi._fakeDb.companies, {authKey: obj.authKey});
@@ -737,7 +737,7 @@
           return {
             execute: function (cb) {
               obj = obj || {};
-              if(gapi.auth.getToken()){
+              if(gapi.auth.getTokenLocal()){
                 var user;
                 if(obj.username) {
                   user = _.findWhere(fakeDb.users, {username: obj.username});
@@ -898,7 +898,7 @@
         get: function() {
           return {
             execute: function(cb) {
-              if(gapi.auth.getToken()) {
+              if(gapi.auth.getTokenLocal()) {
                 var username = getCurrentUsername();
                 var oauthAccount = _.findWhere(fakeDb.oauthAccounts, {email: username});
                 delayed(cb, oauthAccount);
@@ -1037,7 +1037,7 @@
                 delayed(cb, {error: "User cancelled login."});
               }
               else {
-                gapi.auth.setToken(tokenResult);
+                gapi.auth.setTokenLocal(tokenResult);
                 delayed(cb, tokenResult);
               }
             });
@@ -1072,16 +1072,17 @@
 
       }
       else {
-        delayed(cb, gapi.auth.getToken());
+        delayed(cb, gapi.auth.getTokenLocal());
       }
     },
     signOut: function (cb) {
-      this.setToken(null);
+      this.setTokenLocal(null);
       if(cb) {
         delayed(cb);
       }
     },
-    setToken: function (token) {
+    setToken: function() {},
+    setTokenLocal: function (token) {
       if(token) {
         localStorage.setItem("gapi-mock-auth-token", JSON.stringify(token));
       }
@@ -1089,7 +1090,7 @@
         localStorage.removeItem("gapi-mock-auth-token");
       }
     },
-    getToken: function () {
+    getTokenLocal: function () {
       var tokenStr = localStorage.getItem("gapi-mock-auth-token");
       if(tokenStr) {
         return JSON.parse(tokenStr);
