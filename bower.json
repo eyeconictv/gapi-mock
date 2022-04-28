@@ -12,7 +12,7 @@
     "Xiyang Chen <settinghead@gmail.com>"
   ],
   "license": "GNU GPL",
-  "homepage": "https://github.com/Rise-Vision/gapi-mock",
+  "homepage": "https://github.com/porcupine-plan/gapi-mock",
   "private": true,
   "ignore": [
     "**/.*",
